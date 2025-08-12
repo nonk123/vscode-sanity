@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {
@@ -58,11 +58,13 @@
         "commands": [
             {
                 "command": "vscode-sanity-liveserver.run",
-                "title": "Run the sanity live-server"
+                "title": "Run the sanity live-server",
+                "category": "sanity"
             },
             {
                 "command": "vscode-sanity-liveserver.install",
-                "title": "Install the latest sanity binary from GitHub"
+                "title": "Install the latest sanity binary from GitHub",
+                "category": "sanity"
             }
         ],
         "taskDefinitions": [

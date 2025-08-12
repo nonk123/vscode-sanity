@@ -3,9 +3,18 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
+    "author": {
+        "name": "nonk",
+        "email": "me@nonk.dev",
+        "url": "https://nonk.dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nonk123/vscode-sanity"
+    },
     "keywords": [
         "sanity",
         "site generator",
@@ -14,13 +23,10 @@
         "html preview",
         "jinja2"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/nonk123/vscode-sanity"
-    },
     "categories": [
         "Other"
     ],
+    "pricing": "Free",
     "engines": {
         "vscode": "^1.102.0"
     },

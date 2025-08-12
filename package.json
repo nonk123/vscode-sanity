@@ -38,6 +38,12 @@
                     "default": null,
                     "scope": "machine-overridable",
                     "description": "The path to sanity executable."
+                },
+                "sanity.port": {
+                    "type": "number",
+                    "default": 8000,
+                    "scope": "machine-overridable",
+                    "description": "The live-server port."
                 }
             }
         },

@@ -85,8 +85,10 @@ async function actuallyInstall() {
 }
 
 function makeRunTask(): vscode.Task {
+    const port: number = vscode.workspace.getConfiguration("sanity").get("port") ?? 8000;
+
     const process = new vscode.ProcessExecution("sanity", {});
-    process.args = ["--server"];
+    process.args = ["--server", "--port", port.toString()];
 
     const task = new vscode.Task(
         { type: "sanity" },

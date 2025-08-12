@@ -9,11 +9,11 @@ var defaultExePath: string;
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
-        vscode.commands.registerCommand("vscode-sanity.run", function () {
+        vscode.commands.registerCommand("vscode-sanity-liveserver.run", function () {
             if (isExeInstalled()) vscode.tasks.executeTask(makeRunTask());
             else suggestInstall();
         }),
-        vscode.commands.registerCommand("vscode-sanity.install", function () {
+        vscode.commands.registerCommand("vscode-sanity-liveserver.install", function () {
             actuallyInstall().catch((e) => {
                 vscode.window.showErrorMessage(e.message);
             });
@@ -35,13 +35,10 @@ export function activate(context: vscode.ExtensionContext) {
     const exePath = path.join(context.globalStorageUri.fsPath, exe);
     defaultExePath = exePath;
 
-    if (!maybeGetExePath()) {
-        vscode.workspace
-            .getConfiguration("sanity")
-            .update("path", defaultExePath, true);
-    }
+    if (!maybeGetExePath())
+        config().update("path", defaultExePath, true);
 
-    vscode.commands.executeCommand("vscode-sanity.run");
+    execCommand("run");
 }
 
 export function deactivate() { }
@@ -51,7 +48,7 @@ function isExeInstalled(): boolean {
 }
 
 function maybeGetExePath(): string | undefined {
-    return vscode.workspace.getConfiguration("sanity").get("path");
+    return config().get("path");
 }
 
 function getExePath(): string {
@@ -65,7 +62,7 @@ function suggestInstall() {
 
     vscode.window.showInformationMessage(message, install, nope).then((res) => {
         if (res == install)
-            vscode.commands.executeCommand("vscode-sanity.install");
+            execCommand("install");
     });
 }
 
@@ -89,7 +86,7 @@ async function actuallyInstall() {
 }
 
 function makeRunTask(): vscode.Task {
-    const port: number = vscode.workspace.getConfiguration("sanity").get("port") ?? 8000;
+    const port: number = config().get("port") ?? 8000;
 
     const process = new vscode.ProcessExecution(getExePath(), {});
     process.args = ["--server", "--port", port.toString()];
@@ -103,4 +100,12 @@ function makeRunTask(): vscode.Task {
     );
     task.isBackground = true;
     return task;
+}
+
+function execCommand(name: string) {
+    vscode.commands.executeCommand(`vscode-sanity-liveserver.${name}`);
+}
+
+function config(): vscode.WorkspaceConfiguration {
+    return vscode.workspace.getConfiguration("sanity-liveserver");
 }

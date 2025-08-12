@@ -1,5 +1,5 @@
 {
-    "name": "vscode-sanity",
+    "name": "vscode-sanity-liveserver",
     "displayName": "sanity",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
@@ -50,17 +50,17 @@
         },
         "commands": [
             {
-                "command": "vscode-sanity.run",
+                "command": "vscode-sanity-liveserver.run",
                 "title": "Run the sanity live-server"
             },
             {
-                "command": "vscode-sanity.install",
+                "command": "vscode-sanity-liveserver.install",
                 "title": "Install the latest sanity binary from GitHub"
             }
         ],
         "taskDefinitions": [
             {
-                "type": "sanity"
+                "type": "sanity-liveserver"
             }
         ]
     },

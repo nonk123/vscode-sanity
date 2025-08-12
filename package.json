@@ -4,6 +4,8 @@
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
     "version": "0.1.0",
+    "license": "UNLICENSE",
+    "icon": "tmpicon.png",
     "keywords": [
         "sanity",
         "site generator",
@@ -12,7 +14,6 @@
         "html preview",
         "jinja2"
     ],
-    "license": "UNLICENSE",
     "repository": {
         "type": "git",
         "url": "https://github.com/nonk123/vscode-sanity"

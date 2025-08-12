@@ -3,7 +3,6 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "ES2024",
-        "outDir": "out",
         "rootDir": ".",
         "lib": ["ES2024"],
         "sourceMap": true,

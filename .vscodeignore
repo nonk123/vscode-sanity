@@ -1,6 +1,6 @@
 **
 !*.md
 !*.png
-!out
+!dist
 !package.json
 !LICENSE

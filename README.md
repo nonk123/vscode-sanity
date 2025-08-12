@@ -1,4 +1,4 @@
-# vscode-sanity
+# sanity liveserver
 
 Automatically run a live-server after opening a project powered by [sanity](https://github.com/nonk123/sanity).
 

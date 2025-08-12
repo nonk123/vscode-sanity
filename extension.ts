@@ -5,6 +5,8 @@ import * as stream from "stream";
 
 import * as vscode from "vscode";
 
+var defaultExePath: string;
+
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand("vscode-sanity.run", function () {
@@ -29,12 +31,14 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
 
-    if (!getExePath()) {
-        const exe = `sanity${os.platform() === "win32" ? ".exe" : ""}`;
-        const exePath = path.join(context.globalStorageUri.fsPath, exe);
+    const exe = `sanity${os.platform() === "win32" ? ".exe" : ""}`;
+    const exePath = path.join(context.globalStorageUri.fsPath, exe);
+    defaultExePath = exePath;
+
+    if (!maybeGetExePath()) {
         vscode.workspace
             .getConfiguration("sanity")
-            .update("path", exePath, true);
+            .update("path", defaultExePath, true);
     }
 
     vscode.commands.executeCommand("vscode-sanity.run");
@@ -43,12 +47,15 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() { }
 
 function isExeInstalled(): boolean {
-    const path = getExePath();
-    return path ? fs.existsSync(path) : false;
+    return fs.existsSync(getExePath());
 }
 
-function getExePath(): string | undefined {
+function maybeGetExePath(): string | undefined {
     return vscode.workspace.getConfiguration("sanity").get("path");
+}
+
+function getExePath(): string {
+    return maybeGetExePath() ?? defaultExePath;
 }
 
 function suggestInstall() {
@@ -65,10 +72,7 @@ function suggestInstall() {
 async function actuallyInstall() {
     const suffix = os.platform() === "win32" ? "windows.exe" : "linux";
     const url = `https://github.com/nonk123/sanity/releases/download/gh-actions/sanity-release-${suffix}`;
-
     const dest = getExePath();
-    if (!dest)
-        throw new Error("Sanity executable path is unset");
 
     const response = await fetch(url);
     if (!response.ok || response.body === null)
@@ -87,7 +91,7 @@ async function actuallyInstall() {
 function makeRunTask(): vscode.Task {
     const port: number = vscode.workspace.getConfiguration("sanity").get("port") ?? 8000;
 
-    const process = new vscode.ProcessExecution("sanity", {});
+    const process = new vscode.ProcessExecution(getExePath(), {});
     process.args = ["--server", "--port", port.toString()];
 
     const task = new vscode.Task(

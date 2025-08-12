@@ -1,0 +1,77 @@
+{
+    "name": "vscode-sanity",
+    "displayName": "vscode-sanity",
+    "description": "sanity live-server for Visual Studio Code",
+    "publisher": "nonk123",
+    "version": "0.1.0",
+    "keywords": [
+        "sanity",
+        "live reload",
+        "live preview",
+        "html preview",
+        "jinja2"
+    ],
+    "license": "UNLICENSE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nonk123/vscode-sanity"
+    },
+    "categories": [
+        "Other"
+    ],
+    "engines": {
+        "vscode": "^1.102.0"
+    },
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "workspaceContains:www/",
+        "workspaceContains:www/**/*.html.j2",
+        "onCommand:workbench.action.tasks.runTask"
+    ],
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "sanity",
+            "properties": {
+                "sanity.path": {
+                    "type": "string",
+                    "default": null,
+                    "scope": "machine-overridable",
+                    "description": "The path to sanity executable."
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "vscode-sanity.run",
+                "title": "Run the sanity live-server"
+            },
+            {
+                "command": "vscode-sanity.install",
+                "title": "Install the latest sanity binary from GitHub"
+            }
+        ],
+        "taskDefinitions": [
+            {
+                "type": "sanity"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "test": "vscode-test",
+        "lint": "eslint"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.102.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "22.x",
+        "eslint": "^9.32.0",
+        "@vscode/test-cli": "^0.0.11",
+        "@vscode/test-electron": "^2.5.2",
+        "typescript": "^5.9.2"
+    }
+}

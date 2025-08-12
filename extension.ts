@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand("vscode-sanity-liveserver.run", function () {
             if (isExeInstalled()) vscode.tasks.executeTask(makeRunTask());
-            else suggestInstall();
+            else suggestInstall({ thenRun: true });
         }),
         vscode.commands.registerCommand("vscode-sanity-liveserver.install", function () {
             actuallyInstall().catch((e) => {
@@ -55,14 +55,17 @@ function getExePath(): string {
     return maybeGetExePath() ?? defaultExePath;
 }
 
-function suggestInstall() {
+function suggestInstall(options?: { thenRun: true }) {
     const message = "Sanity is not installed. Install now?";
     const install = "Yes";
     const nope = "No";
 
     vscode.window.showInformationMessage(message, install, nope).then((res) => {
-        if (res == install)
-            execCommand("install");
+        if (res == install) {
+            const res = execCommand("install");
+            if (options?.thenRun)
+                res.then(() => execCommand("run"))
+        }
     });
 }
 
@@ -102,8 +105,8 @@ function makeRunTask(): vscode.Task {
     return task;
 }
 
-function execCommand(name: string) {
-    vscode.commands.executeCommand(`vscode-sanity-liveserver.${name}`);
+function execCommand(name: string): Thenable<unknown> {
+    return vscode.commands.executeCommand(`vscode-sanity-liveserver.${name}`);
 }
 
 function config(): vscode.WorkspaceConfiguration {

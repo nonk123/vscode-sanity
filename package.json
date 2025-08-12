@@ -1,11 +1,12 @@
 {
     "name": "vscode-sanity",
-    "displayName": "vscode-sanity",
+    "displayName": "sanity",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
     "version": "0.1.0",
     "keywords": [
         "sanity",
+        "site generator",
         "live reload",
         "live preview",
         "html preview",

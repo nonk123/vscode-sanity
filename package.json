@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {
@@ -52,6 +52,12 @@
                     "default": 8000,
                     "scope": "machine-overridable",
                     "description": "The live-server port."
+                },
+                "sanity.autoEnable": {
+                    "type": "boolean",
+                    "default": true,
+                    "scope": "resource",
+                    "description": "Run sanity on VS Code startup?"
                 }
             }
         },

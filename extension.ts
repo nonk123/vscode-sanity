@@ -77,7 +77,8 @@ export function activate(context: vscode.ExtensionContext) {
     if (!maybeGetExePath())
         config().update("path", defaultExePath, true);
 
-    execCommand("run");
+    if (config().get("autoEnable") === true)
+        execCommand("run");
 }
 
 export function deactivate() { }

@@ -1,11 +1,13 @@
 name: Publish the extension
 
 on:
-  push: { tags: ["publish"] }
+  push:
+    tags: [publish]
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    name: Build & publish
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4

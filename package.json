@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {
@@ -88,17 +88,17 @@
         "lint": "eslint"
     },
     "devDependencies": {
-        "@types/mocha": "^10.0.10",
-        "@types/node": "22.x",
-        "@types/node-fetch": "^3.0.2",
-        "@types/vscode": "^1.102.0",
-        "@vscode/test-cli": "^0.0.11",
-        "@vscode/test-electron": "^2.5.2",
-        "esbuild": "^0.25.8",
-        "eslint": "^9.32.0",
-        "typescript": "^5.5.4"
+        "@types/mocha": "10.0.10",
+        "@types/node": "24.3.1",
+        "@types/node-fetch": "3.0.2",
+        "@types/vscode": "1.103.0",
+        "@vscode/test-cli": "0.0.11",
+        "@vscode/test-electron": "2.5.2",
+        "esbuild": "0.25.9",
+        "eslint": "9.35.0",
+        "typescript": "5.9.2"
     },
     "dependencies": {
-        "node-fetch": "^3.3.2"
+        "node-fetch": "3.3.2"
     }
 }

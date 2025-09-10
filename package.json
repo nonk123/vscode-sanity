@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {

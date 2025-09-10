@@ -14,13 +14,13 @@ var sanityExecution: Thenable<vscode.TaskExecution> | undefined;
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand(cmd("run"), function () {
+            if (installingExe)
+                return;
             if (isExeInstalled()) {
                 sanityExecution = vscode.tasks.executeTask(makeRunTask());
                 updateStatusButton();
                 return;
             }
-            if (installingExe)
-                return;
 
             const message = "Sanity is not installed. Install now?";
             const install = "Yes";
@@ -41,7 +41,8 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }),
         vscode.commands.registerCommand(cmd("install"), function () {
-            if (installingExe || sanityExecution) return;
+            if (installingExe) return;
+            execCommand("stop");
 
             installingExe = true;
             updateStatusButton();
@@ -51,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.window.showErrorMessage(e.message);
                 }).finally(() => {
                     installingExe = false;
+                    updateStatusButton();
                 })
             );
         }),

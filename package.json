@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {
@@ -29,28 +29,29 @@
     "pricing": "Free",
     "main": "./dist/extension.js",
     "activationEvents": [
-        "workspaceContains:www/**/*.html.j2",
+        "workspaceContains:www/**/*.j2",
         "workspaceContains:www/**/*.scss",
-        "workspaceContains:www/**/*.lua"
+        "workspaceContains:www/**/*.lua",
+        "onStartupFinished"
     ],
     "contributes": {
         "configuration": {
             "type": "object",
             "title": "sanity liveserver",
             "properties": {
-                "sanity.path": {
+                "vscode-sanity-liveserver.path": {
                     "type": "string",
                     "default": null,
                     "scope": "machine-overridable",
                     "description": "The path to sanity executable."
                 },
-                "sanity.port": {
+                "vscode-sanity-liveserver.port": {
                     "type": "number",
                     "default": 8000,
                     "scope": "machine-overridable",
                     "description": "The live-server port."
                 },
-                "sanity.autoEnable": {
+                "vscode-sanity-liveserver.autoEnable": {
                     "type": "boolean",
                     "default": true,
                     "scope": "resource",

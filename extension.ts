@@ -11,8 +11,13 @@ var installingExe: boolean = false;
 var statusButton: vscode.StatusBarItem;
 var sanityExecution: Thenable<vscode.TaskExecution> | undefined;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+    const exe = `sanity${os.platform() === "win32" ? ".exe" : ""}`;
+    const exePath = path.join(context.globalStorageUri.fsPath, exe);
+    defaultExePath = exePath;
+
     context.subscriptions.push(
+        vscode.workspace.onDidChangeWorkspaceFolders(autorun),
         vscode.commands.registerCommand(cmd("run"), function () {
             if (installingExe)
                 return;
@@ -72,15 +77,9 @@ export function activate(context: vscode.ExtensionContext) {
         })()
     );
 
-    const exe = `sanity${os.platform() === "win32" ? ".exe" : ""}`;
-    const exePath = path.join(context.globalStorageUri.fsPath, exe);
-    defaultExePath = exePath;
-
     if (!maybeGetExePath())
-        config().update("path", defaultExePath, true);
-
-    if (config().get("autoEnable") === true)
-        execCommand("run");
+        await config().update("path", defaultExePath, true);
+    autorun();
 }
 
 export function deactivate() { }
@@ -126,6 +125,15 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
     }
 }
 
+function autorun() {
+    if (config().get<boolean>("autoEnable") !== true)
+        return;
+    vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1).then(function (files) {
+        if (files.length > 0) execCommand("run");
+    });
+
+}
+
 function updateStatusButton() {
     if (installingExe) {
         statusButton.command = undefined;
@@ -149,7 +157,7 @@ function makeRunTask(): vscode.Task {
     process.args = ["--server", "--port", port.toString()];
 
     const task = new vscode.Task(
-        { type: "sanity-liveserver" },
+        { type: "vscode-sanity-liveserver" },
         vscode.TaskScope.Workspace,
         "run",
         "sanity",
@@ -168,5 +176,5 @@ function execCommand(name: string): Thenable<unknown> {
 }
 
 function config(): vscode.WorkspaceConfiguration {
-    return vscode.workspace.getConfiguration("sanity-liveserver");
+    return vscode.workspace.getConfiguration("vscode-sanity-liveserver");
 }

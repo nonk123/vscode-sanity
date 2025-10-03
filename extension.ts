@@ -84,7 +84,14 @@ export async function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() { }
 
+function expectGlobalStorage() {
+    const dir = path.dirname(getExePath());
+    if (!fs.existsSync(dir))
+        fs.mkdirSync(dir);
+}
+
 function isExeInstalled(): boolean {
+    expectGlobalStorage();
     return fs.existsSync(getExePath());
 }
 
@@ -112,15 +119,12 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
         progress.report({ increment: read / size });
     });
 
-    const destDir = path.dirname(dest);
-    if (!fs.existsSync(destDir))
-        fs.mkdirSync(destDir);
-
+    expectGlobalStorage();
     const out = fs.createWriteStream(dest);
     try {
         await stream.promises.pipeline(response.body, out);
     } catch (e) {
-        fs.unlink(dest, (_) => null);
+        fs.unlink(dest, () => null);
         throw e;
     }
 }

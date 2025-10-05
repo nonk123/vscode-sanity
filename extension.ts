@@ -158,7 +158,7 @@ function makeRunTask(): vscode.Task {
     const port: number = config().get("port") ?? 8000;
 
     const process = new vscode.ProcessExecution(getExePath(), {});
-    process.args = ["--server", "--port", port.toString()];
+    process.args = ["server", "--port", port.toString()];
 
     const task = new vscode.Task(
         { type: "vscode-sanity-liveserver" },

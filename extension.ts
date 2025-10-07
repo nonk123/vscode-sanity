@@ -86,8 +86,7 @@ export function deactivate() { }
 
 function expectGlobalStorage() {
     const dir = path.dirname(getExePath());
-    if (!fs.existsSync(dir))
-        fs.mkdirSync(dir);
+    fs.mkdirSync(dir, { recursive: true });
 }
 
 function isExeInstalled(): boolean {

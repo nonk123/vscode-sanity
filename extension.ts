@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as stream from "stream";
+import * as cp from "child_process";
 
 import * as vscode from "vscode";
 import fetch from "node-fetch";
@@ -9,45 +10,30 @@ import fetch from "node-fetch";
 var defaultExePath: string;
 var installingExe: boolean = false;
 var statusButton: vscode.StatusBarItem;
-var sanityExecution: Thenable<vscode.TaskExecution> | undefined;
+
+var process: cp.ChildProcess | undefined;
+var output: vscode.OutputChannel;
 
 export async function activate(context: vscode.ExtensionContext) {
     const exe = `sanity${os.platform() === "win32" ? ".exe" : ""}`;
-    const exePath = path.join(context.globalStorageUri.fsPath, exe);
-    defaultExePath = exePath;
+    defaultExePath = path.join(context.globalStorageUri.fsPath, exe);
 
+    output = vscode.window.createOutputChannel("sanity liveserver");
     context.subscriptions.push(
         vscode.workspace.onDidChangeWorkspaceFolders(autorun),
         vscode.commands.registerCommand(cmd("run"), function () {
-            if (installingExe)
-                return;
-            if (isExeInstalled()) {
-                sanityExecution = vscode.tasks.executeTask(makeRunTask());
-                updateStatusButton();
-                return;
-            }
-
-            const message = "Sanity is not installed. Install now?";
-            const install = "Yes";
-            const nope = "No";
-
-            vscode.window.showInformationMessage(message, install, nope).then((res) => {
-                if (res == install)
-                    execCommand("install").then(() => execCommand("run"))
-            });
+            if (installingExe) return;
+            else if (isExeInstalled()) runSanity();
+            else suggestInstallSanity();
         }),
         vscode.commands.registerCommand(cmd("stop"), function () {
-            if (!sanityExecution)
-                return;
-            sanityExecution.then(exec => {
-                exec.terminate();
-                sanityExecution = undefined;
-                updateStatusButton();
-            });
+            process?.kill("SIGTERM");
+            process = undefined;
+            updateStatusButton();
         }),
         vscode.commands.registerCommand(cmd("install"), function () {
             if (installingExe) return;
-            execCommand("stop");
+            exec("stop");
 
             installingExe = true;
             updateStatusButton();
@@ -82,7 +68,9 @@ export async function activate(context: vscode.ExtensionContext) {
     autorun();
 }
 
-export function deactivate() { }
+export function deactivate() {
+    exec("stop");
+}
 
 function expectGlobalStorage() {
     const dir = path.dirname(getExePath());
@@ -110,7 +98,7 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
     const response = await fetch(url);
     if (!response.ok || response.body === null)
         throw new Error(`Can't fetch ${url}: ${response.statusText}`);
-    const size = Number(response.headers.get('content-length'));
+    const size = Number(response.headers.get("content-length"));
 
     let read = 0;
     response.body.on("data", (chunk: Buffer) => {
@@ -132,17 +120,16 @@ function autorun() {
     if (config().get<boolean>("autoEnable") !== true)
         return;
     vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1).then(function (files) {
-        if (files.length > 0) execCommand("run");
+        if (files.length > 0) exec("run");
     });
-
 }
 
 function updateStatusButton() {
     if (installingExe) {
         statusButton.command = undefined;
-        statusButton.text = "$(globe) sanity: installing";
+        statusButton.text = "$(beaker) sanity: installing";
         statusButton.tooltip = "Installing the live-server...";
-    } else if (sanityExecution) {
+    } else if (process) {
         statusButton.command = cmd("stop");
         statusButton.text = "$(globe) sanity: running";
         statusButton.tooltip = "Stop sanity live-server";
@@ -153,28 +140,31 @@ function updateStatusButton() {
     }
 }
 
-function makeRunTask(): vscode.Task {
-    const port: number = config().get("port") ?? 8000;
+function suggestInstallSanity() {
+    const message = "Sanity is not installed. Install now?";
+    const install = "Yes", nope = "No";
+    vscode.window.showInformationMessage(message, install, nope).then((res) => {
+        if (res == install)
+            exec("install").then(() => exec("run"))
+    });
+}
 
-    const process = new vscode.ProcessExecution(getExePath(), {});
-    process.args = ["server", "--port", port.toString()];
+function runSanity() {
+    const port = config().get("port") ?? 8000;
+    const cwd = vscode.workspace.workspaceFolders?.at(0)?.uri.fsPath;
+    const args = ["server", "--port", port.toString()];
 
-    const task = new vscode.Task(
-        { type: "vscode-sanity-liveserver" },
-        vscode.TaskScope.Workspace,
-        "run",
-        "sanity",
-        process
-    );
-    task.isBackground = true;
-    return task;
+    output.clear(), output.show();
+    process = cp.execFile(getExePath(), args, { cwd }, () => { exec("stop"); });
+    process.stderr?.on("data", output.append);
+    updateStatusButton();
 }
 
 function cmd(name: string): string {
     return `vscode-sanity-liveserver.${name}`;
 }
 
-function execCommand(name: string): Thenable<unknown> {
+function exec(name: string): Thenable<unknown> {
     return vscode.commands.executeCommand(cmd(name));
 }
 

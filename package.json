@@ -90,13 +90,13 @@
     },
     "devDependencies": {
         "@types/mocha": "10.0.10",
-        "@types/node": "24.7.2",
+        "@types/node": "24.9.2",
         "@types/node-fetch": "3.0.2",
         "@types/vscode": "1.97.0",
         "@vscode/test-cli": "0.0.12",
         "@vscode/test-electron": "2.5.2",
-        "esbuild": "0.25.10",
-        "eslint": "9.37.0",
+        "esbuild": "0.25.12",
+        "eslint": "9.39.0",
         "typescript": "5.9.3"
     },
     "dependencies": {

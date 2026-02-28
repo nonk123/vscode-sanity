@@ -2,7 +2,7 @@ name: Publish the extension
 
 on:
   push:
-    tags: [publish]
+    tags: [v*]
 
 jobs:
   publish:

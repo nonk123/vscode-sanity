@@ -92,7 +92,7 @@ function getExePath(): string {
 
 async function actuallyInstall(progress: vscode.Progress<{ message?: string | undefined, increment?: number | undefined }>) {
     const suffix = os.platform() === "win32" ? "windows.exe" : "linux";
-    const url = `https://github.com/nonk123/sanity/releases/download/gh-actions/sanity-${suffix}`;
+    const url = `https://github.com/nonk123/sanity/releases/latest/download/sanity-${suffix}`;
     const dest = getExePath();
 
     const response = await fetch(url);

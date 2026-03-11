@@ -11,7 +11,7 @@ var defaultExePath: string;
 var installingExe: boolean = false;
 var statusButton: vscode.StatusBarItem;
 
-var process: cp.ChildProcess | undefined;
+var process: cp.ChildProcess | null;
 var output: vscode.OutputChannel;
 
 export async function activate(context: vscode.ExtensionContext) {

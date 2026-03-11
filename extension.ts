@@ -38,7 +38,12 @@ export async function activate(context: vscode.ExtensionContext) {
             installingExe = true;
             updateStatusButton();
 
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, cancellable: false, title: "Downloading sanity executable" },
+            vscode.window.withProgress(
+                {
+                    location: vscode.ProgressLocation.Notification,
+                    cancellable: false,
+                    title: "Downloading sanity executable"
+                },
                 (progress) => actuallyInstall(progress).catch((e) => {
                     vscode.window.showErrorMessage(e.message);
                 }).finally(() => {
@@ -100,8 +105,14 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
         throw new Error(`Can't fetch ${url}: ${response.statusText}`);
 
     const size = Number(response.headers.get("content-length"));
+
+    let read = 0;
     response.body.on("data", (chunk: Buffer) => {
-        progress.report({ increment: chunk.length / size });
+        read += chunk.length;
+        progress.report({
+            message: `${Math.round(100.0 * (read / size))}%`,
+            increment: 100.0 * (chunk.length / size),
+        });
     });
 
     expectGlobalStorage();

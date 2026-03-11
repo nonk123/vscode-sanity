@@ -21,17 +21,17 @@ export async function activate(context: vscode.ExtensionContext) {
     output = vscode.window.createOutputChannel("sanity liveserver");
     context.subscriptions.push(
         vscode.workspace.onDidChangeWorkspaceFolders(autorun),
-        vscode.commands.registerCommand(cmd("run"), function () {
+        vscode.commands.registerCommand(cmd("run"), () => {
             if (installingExe) return;
             else if (isExeInstalled()) runSanity();
             else suggestInstallSanity();
         }),
-        vscode.commands.registerCommand(cmd("stop"), function () {
+        vscode.commands.registerCommand(cmd("stop"), () => {
             process?.kill("SIGTERM");
             process = undefined;
             updateStatusButton();
         }),
-        vscode.commands.registerCommand(cmd("install"), function () {
+        vscode.commands.registerCommand(cmd("install"), () => {
             if (installingExe) return;
             exec("stop");
 
@@ -62,7 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 return task;
             },
         }),
-        (function () {
+        (() => {
             statusButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 200);
             updateStatusButton();
             statusButton.show();

@@ -28,7 +28,7 @@ export async function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand(cmd("stop"), () => {
             process?.kill("SIGTERM");
-            process = undefined;
+            process = null;
             updateStatusButton();
         }),
         vscode.commands.registerCommand(cmd("install"), () => {
@@ -44,13 +44,15 @@ export async function activate(context: vscode.ExtensionContext) {
                     cancellable: false,
                     title: "Downloading sanity executable"
                 },
-                (progress) => {
-                    return actuallyInstall(progress).catch((e) => {
+                async (progress) => {
+                    try {
+                        return await actuallyInstall(progress);
+                    } catch (e: any) {
                         vscode.window.showErrorMessage(e.message);
-                    }).finally(() => {
+                    } finally {
                         installingExe = false;
                         updateStatusButton();
-                    });
+                    }
                 }
             );
         }),
@@ -128,13 +130,12 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
     }
 }
 
-function autorun() {
+async function autorun() {
     if (config().get<boolean>("autoEnable") !== true)
         return;
-    vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1)
-        .then((files) => {
-            if (files.length > 0) exec("run");
-        });
+    const files = await vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1);
+    if (files.length > 0)
+        exec("run");
 }
 
 function updateStatusButton() {
@@ -153,13 +154,14 @@ function updateStatusButton() {
     }
 }
 
-function suggestInstallSanity() {
+async function suggestInstallSanity() {
     const message = "Sanity is not installed. Install now?";
     const install = "Yes", nope = "No";
-    vscode.window.showInformationMessage(message, install, nope).then((res) => {
-        if (res == install)
-            exec("install").then(() => exec("run"))
-    });
+    const result = await vscode.window.showInformationMessage(message, install, nope);
+    if (result == install) {
+        await exec("install");
+        await exec("run");
+    }
 }
 
 function runSanity() {

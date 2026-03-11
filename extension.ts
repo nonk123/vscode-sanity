@@ -119,9 +119,10 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
 function autorun() {
     if (config().get<boolean>("autoEnable") !== true)
         return;
-    vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1).then(function (files) {
-        if (files.length > 0) exec("run");
-    });
+    vscode.workspace.findFiles("www/**/*.{j2,scss,lua}", null, 1)
+        .then((files) => {
+            if (files.length > 0) exec("run");
+        });
 }
 
 function updateStatusButton() {

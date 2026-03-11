@@ -44,12 +44,14 @@ export async function activate(context: vscode.ExtensionContext) {
                     cancellable: false,
                     title: "Downloading sanity executable"
                 },
-                (progress) => actuallyInstall(progress).catch((e) => {
-                    vscode.window.showErrorMessage(e.message);
-                }).finally(() => {
-                    installingExe = false;
-                    updateStatusButton();
-                })
+                (progress) => {
+                    return actuallyInstall(progress).catch((e) => {
+                        vscode.window.showErrorMessage(e.message);
+                    }).finally(() => {
+                        installingExe = false;
+                        updateStatusButton();
+                    });
+                }
             );
         }),
         vscode.tasks.registerTaskProvider("sanity-liveserver", {

@@ -98,16 +98,15 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
     const response = await fetch(url);
     if (!response.ok || response.body === null)
         throw new Error(`Can't fetch ${url}: ${response.statusText}`);
-    const size = Number(response.headers.get("content-length"));
 
-    let read = 0;
+    const size = Number(response.headers.get("content-length"));
     response.body.on("data", (chunk: Buffer) => {
-        read += chunk.length;
-        progress.report({ increment: read / size });
+        progress.report({ increment: chunk.length / size });
     });
 
     expectGlobalStorage();
     const out = fs.createWriteStream(dest);
+
     try {
         await stream.promises.pipeline(response.body, out);
     } catch (e) {

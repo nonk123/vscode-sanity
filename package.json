@@ -87,7 +87,7 @@
         "vscode": "^1.97.0"
     },
     "devDependencies": {
-        "@types/node": "25.5.2",
+        "@types/node": "25.6.0",
         "@types/node-fetch": "3.0.2",
         "@types/vscode": "^1.97.0",
         "esbuild": "0.28.0",

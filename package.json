@@ -91,7 +91,7 @@
         "@types/node-fetch": "3.0.2",
         "@types/vscode": "^1.97.0",
         "esbuild": "0.28.0",
-        "eslint": "10.2.1",
+        "eslint": "10.3.0",
         "typescript": "6.0.3"
     },
     "dependencies": {

@@ -124,9 +124,12 @@ async function actuallyInstall(progress: vscode.Progress<{ message?: string | un
 
     try {
         await stream.promises.pipeline(response.body, out);
+        fs.chmodSync(dest, 0o777);
     } catch (e) {
-        fs.unlink(dest, () => null);
+        fs.unlinkSync(dest);
         throw e;
+    } finally {
+        out.close();
     }
 }
 

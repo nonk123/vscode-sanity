@@ -72,8 +72,6 @@ export async function activate(context: vscode.ExtensionContext) {
         })()
     );
 
-    if (!maybeGetExePath())
-        await config().update("path", defaultExePath, true);
     autorun();
 }
 
@@ -92,7 +90,11 @@ function isExeInstalled(): boolean {
 }
 
 function maybeGetExePath(): string | undefined {
-    return config().get("path");
+    const path = config().get<string>("path");
+    if (path !== undefined && fs.existsSync(path))
+        return path;
+    config().update("path", defaultExePath, true);
+    return defaultExePath;
 }
 
 function getExePath(): string {
@@ -161,6 +163,7 @@ async function suggestInstallSanity() {
     const message = "Sanity is not installed. Install now?";
     const install = "Yes", nope = "No";
     const result = await vscode.window.showInformationMessage(message, install, nope);
+
     if (result == install) {
         await exec("install");
         await exec("run");
@@ -173,8 +176,14 @@ function runSanity() {
     const args = ["server", "--port", port.toString()];
 
     output.clear(), output.show();
-    process = cp.execFile(getExePath(), args, { cwd }, () => { exec("stop"); });
+
+    process = cp.execFile(getExePath(), args, { cwd }, err => {
+        if (err)
+            output.appendLine(err.message);
+        exec("stop");
+    });
     process.stderr?.on("data", output.append);
+
     updateStatusButton();
 }
 

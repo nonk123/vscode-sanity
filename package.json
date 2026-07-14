@@ -87,12 +87,12 @@
         "vscode": "^1.97.0"
     },
     "devDependencies": {
-        "@types/node": "26.1.0",
+        "@types/node": "26.1.1",
         "@types/node-fetch": "3.0.2",
         "@types/vscode": "^1.97.0",
         "esbuild": "0.28.1",
-        "eslint": "10.6.0",
-        "typescript": "6.0.3"
+        "eslint": "10.7.0",
+        "typescript": "7.0.2"
     },
     "dependencies": {
         "node-fetch": "3.3.2"

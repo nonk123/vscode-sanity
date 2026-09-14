@@ -2,14 +2,14 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
     groups:
-      npm:
+      sybau:
         patterns: ["*"]
 
   - package-ecosystem: github-actions
     directory: /
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
     groups:
-      gh:
+      sybau:
         patterns: ["*"]

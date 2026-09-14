@@ -3,7 +3,7 @@
     "displayName": "sanity liveserver",
     "description": "sanity live-server for Visual Studio Code",
     "publisher": "nonk123",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "license": "UNLICENSE",
     "icon": "tmpicon.png",
     "author": {
@@ -87,7 +87,7 @@
         "vscode": "^1.97.0"
     },
     "devDependencies": {
-        "@types/node": "26.4.1",
+        "@types/node": "26.5.1",
         "@types/node-fetch": "3.0.2",
         "@types/vscode": "^1.97.0",
         "esbuild": "0.28.2",

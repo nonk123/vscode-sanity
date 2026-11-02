@@ -89,7 +89,7 @@
     "devDependencies": {
         "@types/node": "26.6.6",
         "@types/node-fetch": "3.0.2",
-        "@types/vscode": "^1.144.0",
+        "@types/vscode": "=1.97.0",
         "esbuild": "0.28.2",
         "eslint": "10.13.0",
         "typescript": "7.0.2"
